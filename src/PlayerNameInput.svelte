@@ -16,8 +16,8 @@
       : player1Name && player2Name && player1Name === player2Name
       ? "Players must have different names"
       : undefined;
-  const dispatch = createEventDispatcher();
 
+  const dispatch = createEventDispatcher();
   const handleSubmit: svelte.JSX.EventHandler<Event, HTMLFormElement> = () => {
     if (error) {
       return;
@@ -29,12 +29,24 @@
   };
 </script>
 
-<form on:submit|preventDefault={handleSubmit}>
+<style>
+  .form {
+    min-width: 480px;
+  }
+  .error {
+    color: red;
+    margin-bottom: 0.5rem;
+  }
+</style>
+
+<form
+  on:submit|preventDefault={handleSubmit}
+  class="max-w-md rounded shadow-lg p-4 form">
   <p>Please set player names</p>
   <TextField label="Player 1" bind:value={player1Name} />
   <TextField label="Player 2" bind:value={player2Name} />
   {#if error}
-    <p>{error}</p>
+    <p class="error">{error}</p>
   {/if}
   <Button>Start game</Button>
 </form>

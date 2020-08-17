@@ -4,13 +4,17 @@
   import { Match } from "./Match";
   import MatchBoard from "./MatchBoard.svelte";
 
-  let match: Match | null;
+  let match: Match | null = null;
 
   const handleSetPlayerNames = (
     event: CustomEvent<{ player1Name: string; player2Name: string }>
   ) => {
     const { detail } = event;
     match = new Match(detail.player1Name, detail.player2Name);
+  };
+
+  const handleNewGame = () => {
+    match = null;
   };
 </script>
 
@@ -32,7 +36,7 @@
 <main>
 
   {#if match}
-    <MatchBoard {match} />
+    <MatchBoard {match} on:newGame={handleNewGame} />
   {:else}
     <PlayerNameInput on:setPlayerNames={handleSetPlayerNames} />
   {/if}

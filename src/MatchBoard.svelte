@@ -3,13 +3,13 @@
 
   import type { Match } from "./Match";
   import type PlayerNameInput from "./PlayerNameInput.svelte";
+  import { createEventDispatcher } from "svelte";
 
   export let match: Match;
   let scoreDisplay = match.score();
   let isMatchedFinished = false;
-  console.log({ match });
 
-  const handleButtonClick: svelte.JSX.EventHandler<
+  const handlePlayerButtonClick: svelte.JSX.EventHandler<
     MouseEvent,
     HTMLButtonElement
   > = (event) => {
@@ -18,11 +18,19 @@
     scoreDisplay = match.score();
     isMatchedFinished = match.isMatchFinished;
   };
+
+  const dispatch = createEventDispatcher();
+  const handleNewGameClick: svelte.JSX.EventHandler<
+    MouseEvent,
+    HTMLButtonElement
+  > = (event) => {
+    dispatch("newGame");
+  };
 </script>
 
 <style>
   .board {
-    min-width: 400px;
+    min-width: 480px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -46,7 +54,7 @@
   }
 
   .score {
-    font-size: 3rem;
+    font-size: 2.5rem;
     margin-top: 1rem;
   }
 </style>
@@ -55,8 +63,9 @@
   <div class="button-container">
     {#each [match.player1Name, match.player2Name] as playerName, index (playerName)}
       <Button
-        on:click={handleButtonClick}
+        on:click={handlePlayerButtonClick}
         disabled={isMatchedFinished}
+        outlined={true}
         data-player={playerName}>
         <div class="button-content">
           {playerName}
@@ -67,4 +76,9 @@
   </div>
 
   <p class="score">{scoreDisplay}</p>
+
+  {#if isMatchedFinished}
+    <p>Match is finished!</p>
+    <Button on:click={handleNewGameClick}>New game</Button>
+  {/if}
 </div>
