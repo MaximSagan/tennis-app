@@ -35,7 +35,7 @@ export class Match {
     })) as [MatchPlayerState, MatchPlayerState];
   }
 
-  private get isTiebreak(): boolean {
+  get isTiebreak(): boolean {
     return (
       this.matchState[0].games === GAMES_FOR_WIN_OR_TIEBREAK &&
       this.matchState[1].games === GAMES_FOR_WIN_OR_TIEBREAK
@@ -92,7 +92,7 @@ export class Match {
     const [trailingPlayerGames, leadingPlayerGames] = [
       ...this.matchState.map((player) => player.games),
     ].sort();
-    console.log({ trailingPlayerGames, leadingPlayerGames });
+
     return (
       // Leader reached points required to win with a sufficient margin
       (leadingPlayerGames === GAMES_FOR_WIN_OR_TIEBREAK &&
@@ -104,7 +104,6 @@ export class Match {
 
   private getPointsDisplay(): string {
     const [player1State, player2State] = this.matchState;
-    console.log(this.matchState);
 
     if (this.isTiebreak) {
       return `${player1State.points}-${player2State.points}`;
