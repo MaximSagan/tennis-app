@@ -1,13 +1,24 @@
 <script lang="ts">
-  export let name: string;
+  import "smelte/src/tailwind.css";
+  import PlayerNameInput from "./PlayerNameInput.svelte";
+  import { Match } from "./Match";
+  import MatchBoard from "./MatchBoard.svelte";
+
+  let match: Match | null;
+
+  const handleSetPlayerNames = (
+    event: CustomEvent<{ player1Name: string; player2Name: string }>
+  ) => {
+    const { detail } = event;
+    match = new Match(detail.player1Name, detail.player2Name);
+  };
 </script>
 
 <style>
   main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
+    height: 100vh;
+    display: grid;
+    place-items: center;
   }
 
   h1 {
@@ -16,19 +27,14 @@
     font-size: 4em;
     font-weight: 100;
   }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
 </style>
 
 <main>
-  <h1>Hello {name}!</h1>
-  <p>
-    Visit the
-    <a href="https://svelte.dev/tutorial">Svelte tutorial</a>
-    to learn how to build Svelte apps.
-  </p>
+
+  {#if match}
+    <MatchBoard {match} />
+  {:else}
+    <PlayerNameInput on:setPlayerNames={handleSetPlayerNames} />
+  {/if}
+
 </main>
