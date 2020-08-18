@@ -1,11 +1,8 @@
-import { writable, derived } from "svelte/store";
-
-interface MatchPlayerState {
+type MatchPlayerState = {
   name: string;
   games: number;
   points: number;
-}
-
+};
 type MatchState = [MatchPlayerState, MatchPlayerState];
 
 const POINT_MASK = new Map<number, number>([
@@ -14,9 +11,7 @@ const POINT_MASK = new Map<number, number>([
   [2, 30],
   [3, 40],
 ]);
-
 const MAX_POINTS_TO_SHOW_NUMERIC = 3;
-
 const STANDARD_MIN_POINTS_TO_WIN = 4;
 const TIEBREAK_MIN_POINTS_TO_WIN = 7;
 const GAMES_FOR_WIN_OR_TIEBREAK = 6;
@@ -83,7 +78,7 @@ export class Match {
       updatedOpponentState = opponentState;
     }
     this.matchState =
-      scorerIndex === 0
+      scorerIndex === 0 // Maintain player 1/player 2 order
         ? [updatedScorerState, updatedOpponentState]
         : [updatedOpponentState, updatedScorerState];
   }
@@ -109,11 +104,13 @@ export class Match {
       return `${player1State.points}-${player2State.points}`;
     }
 
-    const showMaskedNumeric =
+    // If at least one of the players has a point score of less than 3 (40), we show the "masked" points (15, 30, 40).
+    // (We don't need to worry about the other player having a point score higher than those maskable, because
+    // in such a case that player would already have won that game and displayed points would have reverted to zero.)
+    if (
       Math.min(player1State.points, player2State.points) <
-      MAX_POINTS_TO_SHOW_NUMERIC;
-
-    if (showMaskedNumeric) {
+      MAX_POINTS_TO_SHOW_NUMERIC
+    ) {
       const player1MaskedPoints = POINT_MASK.get(player1State.points);
       const player2MappedPoints = POINT_MASK.get(player2State.points);
       return `${player1MaskedPoints}-${player2MappedPoints}`;
